@@ -7,6 +7,6 @@ namespace Content.Client.Interfaces.Parallax
     {
         event Action<Texture> OnTextureLoaded;
         Texture ParallaxTexture { get; }
-        void LoadParallax();
+        void LoadParallax(bool regenerate = false);
     }
 }

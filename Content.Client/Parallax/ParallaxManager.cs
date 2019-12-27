@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -34,7 +34,7 @@ namespace Content.Client.Parallax
         public event Action<Texture> OnTextureLoaded;
         public Texture ParallaxTexture { get; private set; }
 
-        public async void LoadParallax()
+        public async void LoadParallax(bool regenerate)
         {
             if (!_configurationManager.GetCVar<bool>("parallax.enabled"))
             {
@@ -90,8 +90,10 @@ namespace Content.Client.Parallax
 
             var sawmill = _logManager.GetSawmill("parallax");
             // Generate the parallax in the thread pool.
-            var image = await Task.Run(() =>
-                ParallaxGenerator.GenerateParallax(table, new Size(1920, 1080), sawmill, debugImages));
+            var windowWidth = _configurationManager.GetCVar<int>("display.width");
+            var windowHeight = _configurationManager.GetCVar<int>("display.height");
+            var size = new Size(windowWidth, windowHeight);
+            var image = await Task.Run(() => ParallaxGenerator.GenerateParallax(table, size, sawmill, debugImages));
             // And load it in the main thread for safety reasons.
             ParallaxTexture = Texture.LoadFromImage(image, "Parallax");
 
